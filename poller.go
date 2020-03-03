@@ -35,6 +35,12 @@ func (p *zkPoller) pollForMetrics() {
 }
 
 func (p *zkPoller) refreshMetrics(updated map[string]string) {
+	if imok, ok := updated[zkOK]; !ok || imok != "imok" {
+		p.metrics[zkOK].WithLabelValues(p.zk.addr).Set(0)
+	} else {
+		p.metrics[zkOK].WithLabelValues(p.zk.addr).Set(1)
+	}
+
 	for name, value := range updated {
 		metric, ok := p.metrics[name]
 
